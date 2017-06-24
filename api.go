@@ -54,8 +54,11 @@ type ValidationError struct {
 // If the grouping is correct, Validate will return nil, nil.
 // If an unexpected error occurs, Validate returns an error in err.
 // Otherwise, if the grouping is incorrect, Validate returns an error in validErr.
-func (p *Processor) Validate(r io.Reader) (validErr *ValidationError, err error) {
-	return p.validate(r)
+//
+// The fileName parameter is needed for error reporting only. You may leave it
+// blank.
+func (p *Processor) Validate(fileName string, r io.Reader) (validErr *ValidationError, err error) {
+	return p.validate(fileName, r)
 }
 
 // Repair repairs the import grouping of a source file.
@@ -63,8 +66,11 @@ func (p *Processor) Validate(r io.Reader) (validErr *ValidationError, err error)
 // If no repairs are necessary, a nil io.Reader will be returned. If repairs
 // are needed, the new file content will be available in the returned
 // io.Reader.
-func (p *Processor) Repair(r io.Reader) (io.Reader, error) {
-	return p.repair(r)
+//
+// The fileName parameter is needed for error reporting only. You may leave it
+// blank.
+func (p *Processor) Repair(fileName string, r io.Reader) (io.Reader, error) {
+	return p.repair(fileName, r)
 }
 
 // Reformat both formats the file with goimports, and repairs any import groupings.
