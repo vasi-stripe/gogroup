@@ -9,6 +9,7 @@
 //
 // - Import statements within the same group have no empty lines between them.
 // - Between two groups is an empty line.
+// - Within a group, statements are sorted by path.
 package group_imports
 
 import "io"
@@ -37,13 +38,23 @@ func NewProcessor(grouper Grouper) *Processor {
 	return &Processor{grouper}
 }
 
+// ValidationError is an error about incorrect import grouping.
+type ValidationError struct {
+	// Line is the line of the file at which the error occurred.
+	Line int
+	// ImportPath is the path being imported.
+	ImportPath string
+	// Message is a description of why this was an error.
+	Message string
+}
+
 // Validate determines whether the existing import grouping of a source file is
 // correct, according to our grouping rules.
 //
 // If the grouping is correct, Validate will return nil, nil.
 // If an unexpected error occurs, Validate returns an error in err.
-// Otherwise, if the grouping is incorrect, Validate returns an error in validError.
-func (p *Processor) Validate(r io.Reader) (validError error, err error) {
+// Otherwise, if the grouping is incorrect, Validate returns an error in validErr.
+func (p *Processor) Validate(r io.Reader) (validErr *ValidationError, err error) {
 	return p.validate(r)
 }
 
