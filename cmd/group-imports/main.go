@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"strings"
@@ -101,14 +102,12 @@ func validateOne(proc *group_imports.Processor, file string) (validErr *group_im
 	return proc.Validate(file, f)
 }
 
-func validate(gr *grouper, files []string) {
-	proc := group_imports.NewProcessor(gr)
+func validateAll(proc *group_imports.Processor, files []string) {
 	invalid := false
-
 	for _, file := range files {
 		validErr, err := validateOne(proc, file)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(statusError)
 		}
 		if validErr != nil {
@@ -120,6 +119,46 @@ func validate(gr *grouper, files []string) {
 
 	if invalid {
 		os.Exit(statusInvalidFile)
+	}
+}
+
+func rewriteOne(proc *group_imports.Processor, file string) error {
+	// Get the rewritten file.
+	r, err := func() (io.Reader, error) {
+		f, err := os.Open(file)
+		if err != nil {
+			return nil, err
+		}
+		defer f.Close()
+		return proc.Reformat(file, f)
+	}()
+	if err != nil {
+		return err
+	}
+
+	if r != nil {
+		// Write the result.
+		f, err := os.Create(file)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		_, err = io.Copy(f, r)
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(os.Stderr, "Fixed %s\n", file)
+	}
+	return nil
+}
+
+func rewriteAll(proc *group_imports.Processor, files []string) {
+	for _, file := range files {
+		err := rewriteOne(proc, file)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+			os.Exit(statusError)
+		}
 	}
 }
 
@@ -164,9 +203,10 @@ Usage: group-imports [OPTIONS] FILE...
 		os.Exit(statusHelp)
 	}
 
+	proc := group_imports.NewProcessor(gr)
 	if rewrite {
-		// TODO
+		rewriteAll(proc, flag.Args())
 	} else {
-		validate(gr, flag.Args())
+		validateAll(proc, flag.Args())
 	}
 }
