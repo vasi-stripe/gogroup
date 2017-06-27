@@ -12,6 +12,7 @@ import (
 	"golang.org/x/tools/imports"
 )
 
+// Read lines from an io.Reader.
 func readLines(r io.Reader) ([]string, error) {
 	scanner := bufio.NewScanner(r)
 	ret := []string{}
@@ -24,6 +25,7 @@ func readLines(r io.Reader) ([]string, error) {
 	return ret, nil
 }
 
+// Write some lines to an io.Writer.
 func writeLines(w io.Writer, lines []string) error {
 	for _, line := range lines {
 		_, err := fmt.Fprintln(w, line)
@@ -34,6 +36,10 @@ func writeLines(w io.Writer, lines []string) error {
 	return nil
 }
 
+// Generate what the import section of a file should look like, properly
+// sorted.
+// Input is a set of grouped imports, and all the lines of text in the file.
+// Output is the lines of text that make up the sorted import section.
 func sortedImportLines(gs groupedImports, lines []string) []string {
 	sort.Sort(gs)
 
@@ -51,7 +57,10 @@ func sortedImportLines(gs groupedImports, lines []string) []string {
 	return ret
 }
 
-func writeFixed(src []byte, gs groupedImports) (io.Reader, error) {
+// Given the contents of a source file and the parsed imports, yield
+// the contents of the file with imports sorted and grouped, as an
+// io.Reader.
+func fixImports(src []byte, gs groupedImports) (io.Reader, error) {
 	lines, err := readLines(bytes.NewReader(src))
 	if err != nil {
 		return nil, err
@@ -74,6 +83,7 @@ func writeFixed(src []byte, gs groupedImports) (io.Reader, error) {
 	return &dst, nil
 }
 
+// Repair the imports section of a file, to reflect sorting and grouping.
 func (p *Processor) repair(fileName string, r io.Reader) (io.Reader, error) {
 	// Get the full contents.
 	src, err := ioutil.ReadAll(r)
@@ -91,7 +101,7 @@ func (p *Processor) repair(fileName string, r io.Reader) (io.Reader, error) {
 	}
 
 	// Generate the fixed version.
-	dst, err := writeFixed(src, gs)
+	dst, err := fixImports(src, gs)
 	if err != nil {
 		return nil, err
 	}
@@ -99,6 +109,7 @@ func (p *Processor) repair(fileName string, r io.Reader) (io.Reader, error) {
 	return dst, nil
 }
 
+// Both reformat the file and fix the imports section.
 func (p *Processor) reformat(fileName string, r io.Reader) (io.Reader, error) {
 	// Get the full contents.
 	src, err := ioutil.ReadAll(r)

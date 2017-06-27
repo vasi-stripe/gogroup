@@ -9,6 +9,7 @@ func (e *ValidationError) Error() string {
 	return fmt.Sprintf("%s: %s (line %s)", e.Message, e.ImportPath, e.Line)
 }
 
+// Yield a validation error.
 func validationError(g *groupedImport, msg string) *ValidationError {
 	return &ValidationError{
 		Message:    msg,
@@ -58,6 +59,7 @@ func (gs groupedImports) validate() *ValidationError {
 	return nil
 }
 
+// Validate a file.
 func (p *Processor) validate(fileName string, r io.Reader) (validErr *ValidationError, err error) {
 	gs, err := p.readImports(fileName, r)
 	if err != nil {
