@@ -1,4 +1,4 @@
-// Package group_imports allows grouping import statements in Go files.
+// Package gogroup helps to group import statements in Go files.
 //
 // Unlike goimports, it does not maintain existing import statement groups.
 // Instead, it allows defining a canonical order of import statements, and fixes
@@ -10,7 +10,7 @@
 // - Import statements within the same group have no empty lines between them.
 // - Between two groups is an empty line.
 // - Within a group, statements are sorted by path.
-package group_imports
+package gogroup
 
 import "io"
 

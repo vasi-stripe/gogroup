@@ -1,4 +1,4 @@
-package group_imports
+package gogroup
 
 import (
 	"fmt"

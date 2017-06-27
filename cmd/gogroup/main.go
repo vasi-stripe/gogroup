@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"group_imports"
+	"gogroup"
 	"strconv"
 )
 
@@ -92,7 +92,7 @@ const (
 	statusInvalidFile = 3
 )
 
-func validateOne(proc *group_imports.Processor, file string) (validErr *group_imports.ValidationError, err error) {
+func validateOne(proc *gogroup.Processor, file string) (validErr *gogroup.ValidationError, err error) {
 	f, err := os.Open(file)
 	if err != nil {
 		return nil, err
@@ -102,7 +102,7 @@ func validateOne(proc *group_imports.Processor, file string) (validErr *group_im
 	return proc.Validate(file, f)
 }
 
-func validateAll(proc *group_imports.Processor, files []string) {
+func validateAll(proc *gogroup.Processor, files []string) {
 	invalid := false
 	for _, file := range files {
 		validErr, err := validateOne(proc, file)
@@ -122,7 +122,7 @@ func validateAll(proc *group_imports.Processor, files []string) {
 	}
 }
 
-func rewriteOne(proc *group_imports.Processor, file string) error {
+func rewriteOne(proc *gogroup.Processor, file string) error {
 	// Get the rewritten file.
 	r, err := func() (io.Reader, error) {
 		f, err := os.Open(file)
@@ -152,7 +152,7 @@ func rewriteOne(proc *group_imports.Processor, file string) error {
 	return nil
 }
 
-func rewriteAll(proc *group_imports.Processor, files []string) {
+func rewriteAll(proc *gogroup.Processor, files []string) {
 	for _, file := range files {
 		err := rewriteOne(proc, file)
 		if err != nil {
@@ -203,7 +203,7 @@ Usage: group-imports [OPTIONS] FILE...
 		os.Exit(statusHelp)
 	}
 
-	proc := group_imports.NewProcessor(gr)
+	proc := gogroup.NewProcessor(gr)
 	if rewrite {
 		rewriteAll(proc, flag.Args())
 	} else {
