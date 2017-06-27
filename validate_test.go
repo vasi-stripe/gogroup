@@ -34,7 +34,7 @@ func testValidate(t *testing.T, g Grouper, opts vopts, imports string) {
 	}
 }
 
-func TestGroupersValidate(t *testing.T) {
+func TestValidateGroupers(t *testing.T) {
 	t.Parallel()
 
 	// No imports statement.
@@ -163,4 +163,59 @@ func TestGroupersValidate(t *testing.T) {
 	testValidate(t, grouperGoimports{}, vopts{invalid: true}, imports)
 	testValidate(t, grouperLocalMiddle{}, vopts{invalid: true}, imports)
 	testValidate(t, grouperWeird{}, vopts{}, imports)
+}
+
+func TestValidateEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	// A single import, but with brackets is ok.
+	imports := `import (
+		"os"
+	)`
+	testValidate(t, grouperGoimports{}, vopts{}, imports)
+
+	// Comments are allowed.
+	imports = `import (
+	  // Comment on a line
+		"os" // End-of-line comment
+
+		/* Multi
+		   line
+		   comment */
+		"github.com/urfave/cli"
+		// Multi
+		// line,
+		// the other way.
+		"golang.org/x/net/context"
+	)`
+	testValidate(t, grouperGoimports{}, vopts{}, imports)
+
+	// Extra newlines are not allowed.
+	imports = `import (
+		"os"
+
+
+		"golang.org/x/net/context"
+	)`
+	testValidate(t, grouperGoimports{}, vopts{verrstr: errstrGroupExtraLine}, imports)
+
+	// Parse errors yield errors.
+	imports = `import (
+		"os
+	)`
+	testValidate(t, grouperGoimports{}, vopts{err: true}, imports)
+
+	// Special imports are allowed, sorted by actual import path.
+	imports = `import (
+		b "os"
+		a "strings"
+		_ "testing"
+
+		. "golang.org/x/net/context"
+	)`
+	testValidate(t, grouperGoimports{}, vopts{}, imports)
+}
+
+func TestValidateErrors(t *testing.T) {
+	// TODO
 }
