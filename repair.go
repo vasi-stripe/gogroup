@@ -2,12 +2,11 @@ package gogroup
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
-	"sort"
-
-	"bytes"
 	"io/ioutil"
+	"sort"
 
 	"golang.org/x/tools/imports"
 )
