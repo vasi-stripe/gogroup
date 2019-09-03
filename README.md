@@ -98,7 +98,6 @@ All of these allow doc comments and named imports.
 ## TODO
 
 * Write tests, check coverage
-* Check lint
 * Write better README
 * Improve validation messages
 * Figure out what to do with different structures:
