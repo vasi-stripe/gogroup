@@ -6,10 +6,10 @@ import (
 	"io"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
-	"gogroup"
-	"strconv"
+	"github.com/vasi-stripe/gogroup"
 )
 
 type grouper struct {
