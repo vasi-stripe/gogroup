@@ -46,6 +46,11 @@ import (
 )
 ```
 
+## Installation
+
+Either install by running `go get github.com/vasi-stripe/gogroup/cmd/gogroup` or, 
+if you have cloned the code, run `go install ./...` from the cloned dir.
+
 ## Usage
 
 Check which files validate this order:
@@ -98,7 +103,6 @@ All of these allow doc comments and named imports.
 ## TODO
 
 * Write tests, check coverage
-* Write better README
 * Improve validation messages
 * Figure out what to do with different structures:
 	* Multiple import declarations. Are these allowed? Do we merge these together?
