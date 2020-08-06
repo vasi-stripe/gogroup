@@ -6,10 +6,10 @@ import (
 	"io"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
-	"gogroup"
-	"strconv"
+	"github.com/vasi-stripe/gogroup"
 )
 
 type grouper struct {
@@ -42,9 +42,9 @@ func (g *grouper) Group(pkg string) int {
 	// A dot distinguishes non-standard packages.
 	if strings.Contains(pkg, ".") {
 		return g.other
-	} else {
-		return g.std
 	}
+
+	return g.std
 }
 
 func (g *grouper) wasSet() bool {

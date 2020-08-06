@@ -103,7 +103,6 @@ All of these allow doc comments and named imports.
 ## TODO
 
 * Write tests, check coverage
-* Check lint
 * Improve validation messages
 * Figure out what to do with different structures:
 	* Multiple import declarations. Are these allowed? Do we merge these together?
