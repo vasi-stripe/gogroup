@@ -129,10 +129,10 @@ func (p *Processor) reformat(fileName string, r io.Reader) (io.Reader, error) {
 		if bytes.Equal(src, formatted) {
 			// No change by either goimports or grouping.
 			return nil, nil
-		} else {
-			// Format changed, but no imports rewrites needed.
-			return bytes.NewReader(formatted), nil
 		}
+
+		// Format changed, but no imports rewrites needed.
+		return bytes.NewReader(formatted), nil
 	}
 	return ret, nil
 }
