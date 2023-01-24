@@ -48,8 +48,9 @@ import (
 
 ## Installation
 
-Either install by running `go get github.com/vasi-stripe/gogroup/cmd/gogroup` or, 
-if you have cloned the code, run `go install ./...` from the cloned dir.
+Either install by running `go install github.com/vasi-stripe/gogroup/cmd/gogroup@latest` (>= go 1.17), 
+`go get github.com/vasi-stripe/gogroup/cmd/gogroup` (< go 1.17) or, if you have cloned the code, run 
+`go install ./...` from the cloned dir.
 
 ## Usage
 
